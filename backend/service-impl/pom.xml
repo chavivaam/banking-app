@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.banking</groupId>
+        <artifactId>banking-app</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>service-impl</artifactId>
+    <name>service-impl</name>
+    <description>Service implementations — depends on service-api and repository-api, never on repository-impl</description>
+
+    <dependencies>
+        <!-- Interfaces to implement -->
+        <dependency>
+            <groupId>com.banking</groupId>
+            <artifactId>service-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Repository interfaces for injection — impl classes are NOT on this classpath -->
+        <dependency>
+            <groupId>com.banking</groupId>
+            <artifactId>repository-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- SecurityContextHolder for getCurrentUser() -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <!-- @Service, Spring context -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>

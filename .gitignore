@@ -1,0 +1,18 @@
+# Maven build output
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Spring Boot
+*.jar
+*.war

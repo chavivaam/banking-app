@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.banking</groupId>
+        <artifactId>banking-app</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>service-api</artifactId>
+    <name>service-api</name>
+    <description>Service interfaces only — DTOs and entities come from domain</description>
+
+    <dependencies>
+        <!-- DTO and entity types used in method signatures -->
+        <dependency>
+            <groupId>com.banking</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>

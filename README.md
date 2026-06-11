@@ -1,65 +1,141 @@
 # Banking Transaction Application
 
-Full-stack banking portal — Spring Boot 3 backend + Angular 16 frontend.
+Full-stack banking portal — Spring Boot 3 (Java) backend + Angular 16 frontend.
 
-## Requirements
+---
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (the only thing you need to install)
+## How to run
 
-## Run
+There are two ways to run this project. Choose the one that fits your setup.
 
+---
+
+### Option 1 — Docker (recommended, MySQL, production-like)
+
+**What you need:**
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+
+**Steps:**
 ```bash
+git clone <repo-url>
+cd "Banking App"
 docker-compose up --build
 ```
 
-| Service  | URL                        |
-|----------|----------------------------|
-| Frontend | http://localhost           |
-| Backend  | http://localhost:8080      |
+That's it. Docker will:
+1. Start a MySQL 8 database
+2. Build and start the Spring Boot backend
+3. Build the Angular app and serve it via nginx
 
-First startup takes a few minutes while Docker downloads base images and builds the project.
+| | URL |
+|---|---|
+| App | http://localhost |
+| Backend API | http://localhost:8080 |
 
-## Default accounts (seeded on first run)
+> First run takes **5–10 minutes** — Docker downloads base images and builds everything from source.  
+> Subsequent runs start in under a minute (layers are cached).  
+> Data persists in a Docker volume between restarts.
 
-| Username | Password  | Role  |
-|----------|-----------|-------|
-| admin    | admin123  | ADMIN |
-| user     | user123   | USER  |
+---
 
-## What each role can do
+### Option 2 — Local dev with H2 (no Docker, no MySQL)
 
-**USER** — create transactions, view their own transaction history  
-**ADMIN** — view all users' transactions, create new user accounts
+Use this if Docker is unavailable (e.g. virtualisation disabled on a corporate machine).  
+H2 is a lightweight embedded database — no installation required.  
+Data is stored in `backend/data/banking_db.mv.db` and persists between restarts.
 
-## Development (without Docker)
+**What you need:**
 
-**Backend** — requires Java 19+ and Maven 3.8+:
+| Tool | Version | Download |
+|---|---|---|
+| Java JDK | 19 or later | https://adoptium.net |
+| Maven | 3.8 or later | https://maven.apache.org/download.cgi |
+| Node.js | 16 or later | https://nodejs.org |
+
+> Check versions: `java -version` · `mvn -version` · `node -version`
+
+**Step 1 — Start the backend**
+
 ```bash
-cd backend
-mvn spring-boot:run -pl app
+cd "Banking App/backend"
+mvn spring-boot:run -pl app -Dspring-boot.run.profiles=dev
 ```
-> Also requires MySQL on localhost:3306 with database `banking_db`, user `root`, password `password`.
 
-**Frontend** — requires Node 16+:
+Wait for:
+```
+Started BankingApplication in X.XXX seconds
+```
+
+**Step 2 — Start the frontend** (new terminal)
+
 ```bash
-cd frontend
+cd "Banking App/frontend"
 npm install --legacy-peer-deps
-npm start          # proxies API calls to localhost:8080
+npm start
 ```
+
+Wait for:
+```
+** Angular Live Development Server is listening on localhost:4200
+```
+
+Open **http://localhost:4200** in your browser.
+
+> The frontend proxies all API calls to `localhost:8080` automatically — no CORS configuration needed.
+
+---
+
+## Default accounts
+
+Seeded automatically on first run:
+
+| Username | Password | Role |
+|---|---|---|
+| admin | admin123 | ADMIN |
+| user | user123 | USER |
+
+## Role permissions
+
+| Feature | USER | ADMIN |
+|---|---|---|
+| View own transactions | ✓ | — |
+| Create a transaction | ✓ | — |
+| View all users' transactions | — | ✓ |
+| Create new users | — | ✓ |
+
+---
 
 ## Project structure
 
 ```
-backend/           Maven multi-module Spring Boot project
-  domain/          Entities, DTOs, enums
-  repository-api/  Repository interfaces (Spring Data JPA)
-  repository-impl/ Repository module (empty — Spring Data auto-implements)
-  service-api/     Service interfaces
-  service-impl/    Service implementations
-  app/             Controllers, security config, entry point
-
-frontend/          Angular 16 standalone SPA
-  src/app/
-    core/          Interceptors, guards, services, models
-    features/      Login, Dashboard (transaction list, create transaction, add user)
+Banking App/
+├── docker-compose.yml          # Orchestrates MySQL + backend + frontend
+├── backend/                    # Spring Boot — Maven multi-module
+│   ├── Dockerfile
+│   ├── domain/                 # Entities, DTOs, enums
+│   ├── repository-api/         # Repository interfaces (Spring Data JPA)
+│   ├── repository-impl/        # Repository module (Spring Data auto-implements)
+│   ├── service-api/            # Service interfaces
+│   ├── service-impl/           # Service implementations
+│   └── app/                    # Controllers, security, entry point
+│       └── src/main/resources/
+│           ├── application.properties        # MySQL (used by Docker)
+│           └── application-dev.properties    # H2 (used for local dev)
+└── frontend/                   # Angular 16 standalone SPA
+    ├── Dockerfile
+    ├── nginx.conf              # SPA routing + API proxy (Docker)
+    ├── proxy.conf.json         # API proxy for local dev server
+    └── src/app/
+        ├── core/               # Interceptors, guards, services, models
+        └── features/           # Login, Dashboard, TransactionList, AddUser
 ```
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Spring Boot 3.3, Spring Security 6, Spring Data JPA, Hibernate |
+| Database | MySQL 8 (Docker) / H2 file-based (local dev) |
+| Frontend | Angular 16, Angular Material, Reactive Forms, Signals |
+| Auth | Session-based (Spring Security form login + CSRF) |
+| Container | Docker Compose, nginx |

@@ -1,0 +1,42 @@
+<div class="dashboard-shell">
+
+  <!-- Sticky navbar -->
+  <mat-toolbar color="primary" class="navbar">
+    <mat-icon class="brand-icon">account_balance</mat-icon>
+    <span class="brand-name">Banking Portal</span>
+    <span class="spacer"></span>
+
+    <div class="user-chip">
+      <mat-icon>person</mat-icon>
+      <span>{{ auth.currentUser()?.username }}</span>
+      <span class="role-badge">{{ auth.currentUser()?.role }}</span>
+    </div>
+
+    <button mat-icon-button (click)="logout()" matTooltip="Sign out" class="logout-btn">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-progress-bar *ngIf="loading()" mode="indeterminate" class="progress-bar"></mat-progress-bar>
+
+  <!-- USER layout: create form on the left, transaction list on the right -->
+  <div *ngIf="!isAdmin()" class="content user-layout">
+    <div class="panel">
+      <app-create-transaction (created)="loadTransactions()" />
+    </div>
+    <div class="panel">
+      <app-transaction-list [transactions]="transactions()" [showUsername]="false" />
+    </div>
+  </div>
+
+  <!-- ADMIN layout: transaction list on the left, add-user on the right -->
+  <div *ngIf="isAdmin()" class="content admin-layout">
+    <div class="panel">
+      <app-transaction-list [transactions]="transactions()" [showUsername]="true" />
+    </div>
+    <div class="panel">
+      <app-add-user />
+    </div>
+  </div>
+
+</div>

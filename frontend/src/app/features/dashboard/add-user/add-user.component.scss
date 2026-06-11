@@ -1,0 +1,44 @@
+.form-card {
+  border-radius: 12px !important;
+
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px !important;
+    font-weight: 600;
+
+    mat-icon {
+      color: #1a3a6b;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.field-icon {
+  margin-right: 4px;
+  color: #5c6bc0;
+}
+
+.opt-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.submit-btn {
+  margin-top: 8px;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}

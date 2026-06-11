@@ -1,0 +1,87 @@
+.login-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #0a1628 0%, #1a3a6b 60%, #0d2b5e 100%);
+}
+
+.login-card {
+  width: 420px;
+  padding: 8px 16px 24px;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4) !important;
+
+  mat-card-header {
+    padding-bottom: 24px;
+  }
+
+  .brand-avatar {
+    background: #1a3a6b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+    mat-icon {
+      color: #c9a227;
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  mat-card-title {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #0a1628;
+  }
+}
+
+.field-icon {
+  margin-right: 4px;
+  color: #5c6bc0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 14px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+}
+
+.submit-btn {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 8px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-spinner {
+  display: inline-block;
+
+  ::ng-deep circle {
+    stroke: white;
+  }
+}

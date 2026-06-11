@@ -1,0 +1,55 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Navy-blue primary, gold accent — banking palette
+$primary: mat.define-palette(mat.$indigo-palette, 900, 700, A400);
+$accent:  mat.define-palette(mat.$amber-palette, 700, A400, A700);
+$warn:    mat.define-palette(mat.$red-palette, 700);
+
+$theme: mat.define-light-theme((
+  color: (primary: $primary, accent: $accent, warn: $warn),
+  typography: mat.define-typography-config(
+    $font-family: "'Roboto', 'Inter', sans-serif"
+  ),
+  density: 0
+));
+
+@include mat.all-component-themes($theme);
+
+// ── Global resets ──────────────────────────────────────────
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', 'Inter', sans-serif;
+  background: #f0f4fa;
+  color: #1a1a2e;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ── Snackbar theming ───────────────────────────────────────
+.snack-success .mdc-snackbar__surface {
+  background-color: #1b5e20 !important;
+}
+
+.snack-error .mdc-snackbar__surface {
+  background-color: #b71c1c !important;
+}
+
+// ── Mat-card global border-radius ─────────────────────────
+.mat-mdc-card {
+  border-radius: 12px !important;
+}
+
+// ── Table header style ─────────────────────────────────────
+.mat-mdc-header-row {
+  background-color: #f0f4fa;
+  font-weight: 600;
+
+  .mat-mdc-header-cell {
+    color: #37474f;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}

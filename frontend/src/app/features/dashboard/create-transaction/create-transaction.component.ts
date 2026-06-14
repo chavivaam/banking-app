@@ -41,6 +41,7 @@ export class CreateTransactionComponent {
   });
 
   loading = false;
+  collapsed = true;
 
   submit(): void {
     if (this.form.invalid) return;

@@ -40,6 +40,7 @@ export class AddUserComponent {
 
   loading = false;
   hidePassword = true;
+  collapsed = true;
 
   submit(): void {
     if (this.form.invalid) return;

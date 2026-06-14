@@ -97,4 +97,9 @@
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
+
+  .panel app-add-user {
+    display: block;
+    margin-top: 24px;
+  }
 }

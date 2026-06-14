@@ -3,11 +3,13 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, switchMap, tap } from 'rxjs';
 import { UserDTO } from '../models/user.model';
+import { CsrfService } from './csrf.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly csrf = inject(CsrfService);
 
   readonly currentUser = signal<UserDTO | null>(null);
 
@@ -23,6 +25,7 @@ export class AuthService {
   logout(): void {
     this.http.post('/logout', null).subscribe({
       complete: () => {
+        this.csrf.invalidate();   // discard any pending prefetch from this session
         this.clearSession();
         this.router.navigate(['/login']);
       }

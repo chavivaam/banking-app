@@ -7,7 +7,6 @@ import { routes } from './app.routes';
 import { credentialsInterceptor } from './core/interceptors/credentials.interceptor';
 import { csrfInterceptor } from './core/interceptors/csrf.interceptor';
 import { authErrorInterceptor } from './core/interceptors/auth-error.interceptor';
-import { AuthService } from './core/services/auth.service';
 import { CsrfService } from './core/services/csrf.service';
 
 export const appConfig: ApplicationConfig = {
@@ -21,13 +20,6 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: (csrf: CsrfService) => () => csrf.bootstrap().pipe(catchError(() => of(null))),
       deps: [CsrfService],
-      multi: true
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (auth: AuthService) => () =>
-        auth.fetchCurrentUser().pipe(catchError(() => of(null))),
-      deps: [AuthService],
       multi: true
     }
   ]

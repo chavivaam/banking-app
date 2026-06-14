@@ -19,20 +19,22 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() == 0) {
+        if (userRepository.getUserByUsername("admin").isEmpty()) {
             userRepository.save(HUser.builder()
                     .username("admin")
                     .password(passwordEncoder.encode("admin123"))
                     .role(Role.ADMIN)
                     .build());
+            log.info("Seeded default user: admin/admin123");
+        }
 
+        if (userRepository.getUserByUsername("user").isEmpty()) {
             userRepository.save(HUser.builder()
                     .username("user")
                     .password(passwordEncoder.encode("user123"))
                     .role(Role.USER)
                     .build());
-
-            log.info("Seeded default users — admin/admin123 and user/user123");
+            log.info("Seeded default user: user/user123");
         }
     }
 }

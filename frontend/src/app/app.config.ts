@@ -1,21 +1,28 @@
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { catchError, of } from 'rxjs';
 import { routes } from './app.routes';
 import { credentialsInterceptor } from './core/interceptors/credentials.interceptor';
+import { csrfInterceptor } from './core/interceptors/csrf.interceptor';
 import { authErrorInterceptor } from './core/interceptors/auth-error.interceptor';
 import { AuthService } from './core/services/auth.service';
+import { CsrfService } from './core/services/csrf.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimations(),
     provideHttpClient(
-      withInterceptors([credentialsInterceptor, authErrorInterceptor]),
-      withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' })
+      withInterceptors([credentialsInterceptor, csrfInterceptor, authErrorInterceptor])
     ),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (csrf: CsrfService) => () => csrf.bootstrap().pipe(catchError(() => of(null))),
+      deps: [CsrfService],
+      multi: true
+    },
     {
       provide: APP_INITIALIZER,
       useFactory: (auth: AuthService) => () =>

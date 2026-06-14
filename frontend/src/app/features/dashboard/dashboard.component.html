@@ -29,12 +29,13 @@
     </div>
   </div>
 
-  <!-- ADMIN layout: transaction list on the left, add-user on the right -->
+  <!-- ADMIN layout: transaction list, create transaction, add-user -->
   <div *ngIf="isAdmin()" class="content admin-layout">
     <div class="panel">
       <app-transaction-list [transactions]="transactions()" [showUsername]="true" />
     </div>
     <div class="panel">
+      <app-create-transaction (created)="loadTransactions()" />
       <app-add-user />
     </div>
   </div>

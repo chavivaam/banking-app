@@ -16,3 +16,7 @@ Thumbs.db
 # Spring Boot
 *.jar
 *.war
+
+# H2 embedded database (local dev runtime files — not for version control)
+backend/data/
+backend/app/data/

@@ -18,13 +18,16 @@ There are two ways to run this project. Choose the one that fits your setup.
 **Steps:**
 ```bash
 git clone <repo-url>
-cd "Banking App"
-docker-compose up --build
+cd <cloned-folder-name>
+docker compose up --build
 ```
 
-That's it. Docker will:
-1. Start a MySQL 8 database
-2. Build and start the Spring Boot backend
+> **Note:** the folder name after `cd` matches whatever the repository is named on GitHub (e.g. `Banking-App`).  
+> If `docker compose` isn't recognised, try the older spelling: `docker-compose up --build`.
+
+Docker will:
+1. Pull MySQL 8 and wait for it to be healthy
+2. Build and start the Spring Boot backend (auto-creates the schema and seeds default accounts)
 3. Build the Angular app and serve it via nginx
 
 | | URL |
@@ -34,7 +37,7 @@ That's it. Docker will:
 
 > First run takes **5–10 minutes** — Docker downloads base images and builds everything from source.  
 > Subsequent runs start in under a minute (layers are cached).  
-> Data persists in a Docker volume between restarts.
+> Data persists in a Docker volume (`mysql_data`) between restarts.
 
 ---
 
@@ -54,19 +57,28 @@ Data is stored in `backend/data/banking_db.mv.db` and persists between restarts.
 
 > Check versions: `java -version` · `mvn -version` · `node -version`
 
-**Step 1 — Start the backend**
+**Step 1 — Build the backend** (once, or after any code change)
 
 ```bash
 cd "Banking App/backend"
-mvn spring-boot:run -pl app -Dspring-boot.run.profiles=dev
+mvn install -DskipTests
 ```
+
+**Step 2 — Run the backend**
+
+```bash
+java -jar app/target/app-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+```
+
+> On Windows, use the full JDK path if `java` is not on PATH:  
+> `"C:\Users\<you>\.jdks\openjdk-19.0.1\bin\java.exe" -jar app/target/app-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev`
 
 Wait for:
 ```
 Started BankingApplication in X.XXX seconds
 ```
 
-**Step 2 — Start the frontend** (new terminal)
+**Step 3 — Start the frontend** (new terminal)
 
 ```bash
 cd "Banking App/frontend"

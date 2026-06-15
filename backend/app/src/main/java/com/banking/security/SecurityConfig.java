@@ -43,26 +43,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler csrfHandler = new CsrfTokenRequestAttributeHandler();
+        // Enable deferred CSRF token resolution for SPA clients.
         csrfHandler.setCsrfRequestAttributeName(null);
 
-        // Wraps CookieCsrfTokenRepository to block saveToken(null, …) calls.
-        // CsrfAuthenticationStrategy issues saveToken(null) then saveToken(newToken) on
-        // every login, which produces two Set-Cookie headers in one response. Some browsers
-        // and proxies process them out of order, deleting the token instead of replacing it.
-        // Blocking the null-save means only the new token cookie is written — one header,
-        // no ambiguity.  The deferred-token path (loadDeferredToken → delegate directly)
-        // is unaffected and continues to write the cookie normally on every response.
+        // Prevent duplicate Set-Cookie headers when Spring rotates the CSRF token on login.
         CookieCsrfTokenRepository delegate = CookieCsrfTokenRepository.withHttpOnlyFalse();
         CsrfTokenRepository csrfRepo = new CsrfTokenRepository() {
             @Override public CsrfToken generateToken(HttpServletRequest request) {
                 return delegate.generateToken(request);
             }
             @Override public void saveToken(CsrfToken token, HttpServletRequest request, HttpServletResponse response) {
-                // Block null (delete) saves only during login: CsrfAuthenticationStrategy issues
-                // saveToken(null) then saveToken(new) in one response, and some browsers process
-                // the two Set-Cookie headers out of order, deleting the token instead of rotating it.
-                // During logout the null save is intentional — allow it so the cookie is cleared for
-                // the next user, who will get a fresh token via the interceptor's 403-retry flow.
+                // Ignore login-time token deletion but allow logout to clear the CSRF cookie.
                 if (token == null && !"/logout".equals(request.getServletPath())) return;
                 delegate.saveToken(token, request, response);
             }
@@ -80,8 +71,7 @@ public class SecurityConfig {
                 .csrfTokenRepository(csrfRepo)
                 .csrfTokenRequestHandler(csrfHandler)
             )
-            // Forces the deferred XSRF-TOKEN cookie to be written on every response so the
-            // Angular client always has a valid token before its first mutating request.
+            // Materialize deferred CSRF tokens and expose them as XSRF-TOKEN cookies.
             .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/api/csrf").permitAll()
